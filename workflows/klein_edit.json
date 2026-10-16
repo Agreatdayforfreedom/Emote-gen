@@ -1,0 +1,22 @@
+{
+  "1": {"class_type": "UNETLoader", "inputs": {"unet_name": "flux-2-klein-4b-fp8.safetensors", "weight_dtype": "default"}},
+  "2": {"class_type": "CLIPLoader", "inputs": {"clip_name": "qwen_3_4b.safetensors", "type": "flux2", "device": "default"}},
+  "3": {"class_type": "VAELoader", "inputs": {"vae_name": "flux2-vae.safetensors"}},
+  "4": {"class_type": "LoadImage", "inputs": {"image": "{{image}}"}},
+  "5": {"class_type": "ImageScaleToTotalPixels", "inputs": {"image": ["4", 0], "upscale_method": "nearest-exact", "megapixels": "{{megapixels}}", "resolution_steps": 1}},
+  "6": {"class_type": "GetImageSize", "inputs": {"image": ["5", 0]}},
+  "7": {"class_type": "EmptyFlux2LatentImage", "inputs": {"width": ["6", 0], "height": ["6", 1], "batch_size": 1}},
+  "8": {"class_type": "Flux2Scheduler", "inputs": {"steps": "{{steps}}", "width": ["6", 0], "height": ["6", 1]}},
+  "9": {"class_type": "KSamplerSelect", "inputs": {"sampler_name": "euler"}},
+  "10": {"class_type": "CLIPTextEncode", "inputs": {"clip": ["2", 0], "text": "{{prompt}}"}},
+  "11": {"class_type": "ConditioningZeroOut", "inputs": {"conditioning": ["10", 0]}},
+  "12": {"class_type": "VAEEncode", "inputs": {"pixels": ["5", 0], "vae": ["3", 0]}},
+  "13": {"class_type": "ReferenceLatent", "inputs": {"conditioning": ["10", 0], "latent": ["12", 0]}},
+  "14": {"class_type": "ReferenceLatent", "inputs": {"conditioning": ["11", 0], "latent": ["12", 0]}},
+  "15": {"class_type": "LoraLoaderModelOnly", "inputs": {"model": ["1", 0], "lora_name": "{{lora_name}}", "strength_model": "{{lora_strength}}"}},
+  "16": {"class_type": "CFGGuider", "inputs": {"model": ["15", 0], "positive": ["13", 0], "negative": ["14", 0], "cfg": 1}},
+  "17": {"class_type": "RandomNoise", "inputs": {"noise_seed": "{{seed}}"}},
+  "18": {"class_type": "SamplerCustomAdvanced", "inputs": {"noise": ["17", 0], "guider": ["16", 0], "sampler": ["9", 0], "sigmas": ["8", 0], "latent_image": ["7", 0]}},
+  "19": {"class_type": "VAEDecode", "inputs": {"samples": ["18", 0], "vae": ["3", 0]}},
+  "20": {"class_type": "SaveImage", "inputs": {"images": ["19", 0], "filename_prefix": "emote_ai"}}
+}

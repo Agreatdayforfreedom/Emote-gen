@@ -1,0 +1,8 @@
+# Normalise text line endings (the project is edited on Windows); never touch binary assets.
+* text=auto
+*.png binary
+*.gif binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.bat text eol=crlf

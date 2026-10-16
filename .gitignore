@@ -1,0 +1,57 @@
+# ---- Python environment and caches ----
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# ---- Generated output (regenerate with `python -m emote run`) ----
+# exports, previews, showcase
+out/
+# intermediate frames (walk, sleep, AI)
+frames/
+# web app jobs: every uploaded image plus its results
+ui_jobs/
+
+# ---- AI runtime and model weights (multi-GB; installed separately, see README) ----
+comfyui/
+ComfyUI*/
+*.safetensors
+*.gguf
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.bin
+
+# ---- Secrets and local-only configuration ----
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+secrets.*
+credentials*
+*token*.txt
+*.local.yaml
+*.local.yml
+*.local.json
+.claude/
+
+# ---- Editors and OS ----
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini
+.DS_Store

@@ -1,0 +1,79 @@
+# All parameters for the emote pipeline. Relative paths resolve from where you run the command.
+paths:
+  base: assets/base.png
+  regions: assets/regions.json
+  frames_dir: frames
+  out_dir: out
+
+prep:
+  upscale: 8               # integer nearest-neighbor factor
+  chroma_color: [0, 255, 0]
+  alpha_cutoff: 128        # alpha >= cutoff counts as opaque
+
+clean:
+  block: null              # pixel-block size in source px; null = auto-detect
+  offset: null             # [x, y]; null = auto-detect
+  colors: 16
+  merge_delta_e: 6.0
+  bg_tolerance: 5.0
+  remove_shadow: true
+  pad: 1
+
+process:
+  source_scale: 8          # input frames are this many times bigger than the native sprite
+  sheet: null              # or a sprite-sheet path, split with rows x cols below
+  rows: 2
+  cols: 2
+  bg:
+    mode: chroma           # chroma | ai | none
+    key: null              # null = prep.chroma_color
+    tolerance: 12.0        # Lab dE
+    alpha_cutoff: 128
+    ai_model: birefnet-general
+  snap:
+    anchor: feet           # feet | bbox-bottom | none
+    feet_rows: 2
+    canvas_pad: 0          # int border around the native size, or "auto" to fit the frames
+    crop: true             # crop all frames to their union bounding box (keeps them registered)
+    crop_pad: 0
+
+restore:                   # AI frames only: paste the ORIGINAL pixels of these regions back where they match
+  regions:
+    eye: [9, 5, 14, 10]    # [x0, y0, x1, y1] in native sprite pixels (x1/y1 exclusive); {} = off
+  min_score: 0.7           # fraction of the region that must already match; below = AI pixels kept
+  tolerance: 12.0
+
+run:
+  backend: procedural      # procedural | ai (ComfyUI backend is optional / not built yet)
+
+animate:                   # procedural animations (pixel shifts only)
+  motion: walk             # walk | sleep   (e.g. python -m emote run -s animate.motion=sleep)
+  sleep:                   # closed eyes + breathing + Zzz; needs an "eye" box in assets/regions.json
+    frames: 12
+    breaths: 1             # breaths per loop
+    breath_amp: 1          # px the body settles down on the out-breath
+    head_nod: 1            # extra px the head droops at the deepest point
+    zzz: true
+    zzz_color: [220, 110, 98]   # must be a colour of the sprite; coral reads on dark AND light chat
+    margin: 2
+    fps: 6                 # sleep is slow; `run` uses this instead of export.fps
+  frames: 4                # loop length; phase i/N keeps the loop seamless
+  facing: left             # direction the sprite faces
+  head_amp: 1              # head thrust forward at foot contact (px); 2 = more pigeon
+  body_dip: 1              # body dips this many px on contact frames
+  leg_swing: 1             # foot travel either side of neutral (px)
+  leg_lift: 1              # lift of the swinging foot (px)
+  margin: 2                # transparent border so shifts never clip
+  out: frames/walk
+
+export:
+  name: emote
+  fps: 8
+  sizes: [112, 56, 28]
+  integer_upscale: true    # upscales use whole-number factors (crisp); downscales use nearest
+  spritesheet:
+    enabled: true          # <name>_sheet.png + <name>_sheet.json atlas
+    cols: 0                # 0 = all frames in one row
+    scale: 1               # integer nearest-neighbor upscale of the sheet
+
+seed: 1234

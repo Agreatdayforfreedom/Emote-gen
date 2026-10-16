@@ -1,0 +1,26 @@
+{
+  "source_url": "https://help.twitch.tv/s/article/emote-guidelines",
+  "date_checked": "2026-10-14",
+  "animated": {
+    "format": "gif",
+    "square": true,
+    "manual_sizes_px": [28, 56, 112],
+    "auto_resize_min_px": 112,
+    "auto_resize_max_px": 4096,
+    "max_file_bytes_manual_each": 524288,
+    "max_file_bytes_auto_resize": 1048576,
+    "max_frames": 60,
+    "max_flashes_per_second": 3,
+    "max_duration_seconds": null,
+    "frame_rate": null,
+    "notes": [
+      "Twitch states no frame-rate or duration limit; only the frame cap, file size and flash rule.",
+      "APNG is NOT listed as an accepted animated format: only GIF.",
+      "Thumbnail defaults to the first frame; a custom static PNG can override it."
+    ]
+  },
+  "static": {
+    "format": "png",
+    "max_file_bytes": 1048576
+  }
+}
